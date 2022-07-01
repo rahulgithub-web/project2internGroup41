@@ -2,21 +2,24 @@ const internModel = require("../models/internModel")
 const collegeModel = require("../models/collegeModel")
 const validation = require("../middlewares/validator");
 
-let { isValid, isValidName, isValidEmail, isValidMobile } = validation;
+let { isEmpty, isValidName, isValidEmail, isValidMobile } = validation;
 
+
+// ==========> Creating Intern Data <=============
 const createInterns = async function (req, res) {
     try {
-        let { name, email, mobile, collegeName } = req.body;
+        let data = req.body;
+        let { name, email, mobile, collegeName } = data;
 
-        if (Object.keys(req.body).length < 1) return res.status(400).send({ status: false, msg: "Insert Data : BAD REQUEST" })
+        if (Object.keys(data).length < 1) return res.status(400).send({ status: false, msg: "Insert Data : BAD REQUEST" })
 
-        if (!isValid(name)) {
+        if (!isEmpty(name)) {
             return res.status(400).send({ status: false, msg: "Enter Intern Name" })
         }
         if (!isValidName(name)) {
             return res.status(400).send({ status: false, msg: "Intern name should be valid" })
         }
-        if (!isValid(email)) {
+        if (!isEmpty(email)) {
             return res.status(400).send({ status: false, msg: " please enter email" })
         }
         if (!isValidEmail(email)) {
@@ -24,9 +27,9 @@ const createInterns = async function (req, res) {
         }
         let emailId = await internModel.findOne({ email: email })
         if (emailId) {
-            return res.status(400).send({ status: false, msg: "emailId already exists" })
+            return res.status(400).send({ status: false, msg: "emailId already exists" });
         }
-        if (!isValid(mobile)) {
+        if (!isEmpty(mobile)) {
             return res.status(400).send({ status: false, msg: " please enter mobile number" })
         }
         if (!isValidMobile(mobile)) {
@@ -34,23 +37,18 @@ const createInterns = async function (req, res) {
         }
         let mobileNo = await internModel.findOne({ mobile: mobile })
         if (mobileNo) {
-            return res.status(400).send({ status: false, msg: "mobile no already exists" })
+            return res.status(400).send({ status: false, msg: "Add a subheadingmobile no already exists" })
         }
-        if (!isValid(collegeName)) {
+        if (!isEmpty(collegeName)) {
             return res.status(400).send({ status: false, msg: "Enter college Name" })
         }
-        let cName = await collegeModel.findOne({ name: collegeName })
-        if (!cName) {
+        collegeName = collegeName.toLowerCase();
+        let college = await collegeModel.find({ name: collegeName })
+        if (!college) {
             return res.status(404).send({ status: false, msg: "No College Found" })
         }
 
-        let data = req.body
-
-        const college = await collegeModel.find({ name: data.collegeName })
-
-        const [dataOfCollege] = college
-
-        const collegeId = dataOfCollege._id.toString()
+        const collegeId = college._id
 
         if (college) {
             data['collegeId'] = collegeId

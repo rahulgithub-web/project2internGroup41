@@ -7,14 +7,12 @@ const InternSchema = new mongoose.Schema(
       required: true,
       trim: true
     },
-
     email: {
       type: String,
       unique: true,
       required: true,
       trim: true
     },
-
     mobile: {
       type: Number,
       unique: true,
@@ -25,7 +23,6 @@ const InternSchema = new mongoose.Schema(
       type: ObjectId,
       ref: "College",
       trim: true
-
     },
     isDeleted: {
       type: Boolean,
