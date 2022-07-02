@@ -1,6 +1,6 @@
 const collegeModel = require("../models/collegeModel")
 const internModel = require("../models/internModel")
-const validation = require("../middlewares/validator");
+const validation = require("../validator/validator");
 
 let { isEmpty, isValidName, isValidFullName,  isValidLogoLink } = validation;
 
